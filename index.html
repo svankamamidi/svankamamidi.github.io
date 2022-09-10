@@ -1,0 +1,520 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+<style>  
+  /* Create two equal columns that floats next to each other */
+  
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .expand {
+    width:100%; height:100%; 
+  }
+  
+  table {
+	width: 100%;
+  }
+
+  table, th, td {
+	border: 1px solid lightgrey;
+	border-collapse: collapse;
+  }
+
+  th, td {
+	padding: 2px 4px;
+  }
+  
+  * {
+	box-sizing: border-box;
+  }
+  
+  .column {
+     float: left;
+     width: 50%;
+	 //padding: 10px 100px 10px 100px;
+	 padding: 10px 10% 10px 10%;
+   }
+   
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	padding: 16px;
+	text-align: center;
+    background-color: #f1f1f1;
+  }
+   
+  .row {margin: 0 -5px;}
+
+  .row:after {
+    content: "";
+	display: table;
+	clear: both;
+  }  
+   
+  .top-left-column {
+    flex: 75%;
+    height: 5%;
+  }
+  
+  .top-right-column {
+    flex: 20%;
+    height: 5%;
+  }
+  .top-row {
+    display: flex;
+  }
+  
+  .addInteractionDiv {
+	width: 15%
+  }
+  
+  .backButtonDiv {
+    width: 15%
+  }
+  
+  .interactionTypes a {
+    color: #2196f3
+  }  
+  
+  .folder-item {
+    font-weight:bold;
+   	background-color:#FDF2E9;
+   	border:1px solid #F0F3F4;
+   	box-sizing:border-box;
+   	float:left;
+   	height:50px;
+   	width:170px;
+   	margin:5px 3px;
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA6lBMVEUAAAD/uQD/uQD/uQD/uQD/uQD/uQD/uwD/uQD/uQD/uQD/uQD/ugD/uQD/ugD/1lr/0En/yjL/1ln/xzP/0En/11zominomij/uQD/01n/55//33//11//01r/56D/34D/12D/6KD/4IH/2GH/1Fr/1Vz/6KH/2GL/vRD/23T/vhL/xi7/1WH/5Zn/553/3Xf/5pr/4IX/2Wj/2GP/3nj/3XP/22z/2WP/2WT/2WX/2Wb/2Wf/2mn/2mj/2mr/22n/22r/2Wr/2Wn/2mv/22v/2mf/2mb/2GT/2GDzukfzuUbafRfaexb////eYXQTAAAAGHRSTlMAHazy6sR1D+3sWP59gIj+5kj+N+P+8vExUlyIAAAAAWJLR0RNgGggZQAAAAd0SU1FB+QDDQshOSsEIzMAAAFLSURBVHja7drZVsIwFIVhBOdZnOKAINXWeQAVZ1GcEN//eeCGq3PTNmGfc7G/F8i/krYryWqhQERERERENDRWLLk0xicmp0Yy/rRLbWZ2BAFFl8HcfPiAkstkIXiAy2hROyB4gdMucNoFOQK2tnd2c1laXgkRkHv8gfKqf0Blr1rLb807oLJfjzys+wYc+I0fRZ4Bh3E98eMVcHQcVxO1gJPTs/OLyyR4QJze1XWj6U0E3KR1e9cKQQTcg4mABzB7AY9gDLAX8AQmAhpgnAER8AwmAl7A7M0AA17BRMAbmAhog9l7Bt7BRMAHmL0ZUH8NGdAB4xKIgE8wLoG9APVPMfeEDFDfkKgfTtUD1A+nX2D2AtSvaHhP+A1m77b8B4wBIqAFZi+gCSYCEjB7Ab9gIqAGZm8Gun9QXRGw0fsH6m3y/0kiIiIiIhrqAxvdHvTMOppkAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIwLTAzLTEzVDExOjMzOjU3KzAwOjAwvq9K8QAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMC0wMy0xM1QxMTozMzo1NyswMDowMM/y8k0AAAAASUVORK5CYII=')
+  }
+
+  
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.0/js/jsplumb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+
+<script>
+  //$( function() {
+  jQuery(document).ready(function() {
+	var name = $("#name");	
+
+	jsPlumb.importDefaults({
+		ConnectionsDetachable: true,
+		ReattachConnections: true,
+		maxConnections: 1,
+		Container: "page_connections",
+		EndpointHoverStyle: { fill: "orange" },
+        HoverPaintStyle: { stroke: "orange" },
+		PaintStyle: { strokeWidth : 4,
+					  stroke: "#456" }
+	});
+	
+	window.addEventListener("resize", redraw);
+    //Can per page load actions
+    //load saved levels & tiles
+    loadSavedLevelsFromCache(true);
+	jsPlumb.ready(function () {
+		drawConnectorDots();
+	});
+	jsPlumb.bind('connection',function(info,ev){
+				
+		info.target.style.boxShadow = "0 4px 8px 0 #71FC79";
+		setTimeout(function(){
+			info.target.style.boxShadow = "0 4px 8px 0 rgba(0, 0, 0, 0.2)";
+		}, 1500);
+		globalMatchCompleted++;
+		var matchItems = JSON.parse(localStorage.getItem("matching-puzzle")).length;
+		if (globalMatchCompleted===matchItems){
+			globalMatchCompleted = 0;
+			party.confetti(document.getElementById("grid"));
+		}
+
+	});
+  });
+  
+  let globalSettings = new Settings();
+  let globalMatchCompleted = 0;
+  
+  function drawConnectorDots(){
+	var localStorage = window.localStorage;
+	var matchItems = localStorage.getItem("matching-puzzle")==null ? defaultPuzzle : JSON.parse(localStorage.getItem("matching-puzzle"));
+	matchItems.forEach((item, index) => {
+	var targetOption = {
+		anchor: "LeftMiddle",
+		maxConnections: 1,
+		isSource: false,
+		isTarget: true,
+		reattach: true,
+		endpoint: "Dot",
+		connector: [ "Bezier", { curviness: 50 } ],
+		setDragAllowedWhenFull: true,
+		scope: "scope" + index
+	};
+
+	var sourceOption = {
+		tolerance: "touch",
+		anchor: "RightMiddle",
+		maxConnections: 1,
+		isSource: true,
+		isTarget: false,
+		reattach: true,
+		endpoint: "Dot",
+		connector: [ "Bezier", { curviness: 50 } ],
+		scope: "scope" + index,
+		setDragAllowedWhenFull: true/*,
+		dropOptions: { hoverClass: "dropHover",
+					   activeClass: "dragActive" }*/
+	};		
+	  item.left.id = index + "l";
+	  item.right.id = index + "r";
+	  var src = jsPlumb.addEndpoint($("#" + item.left.id + "c"), sourceOption);
+	  var tar = jsPlumb.addEndpoint($("#" + item.right.id + "c"), targetOption);
+	  jsPlumb.makeSource($("#" + item.left.id + "c"), sourceOption);
+	  jsPlumb.makeTarget($("#" + item.right.id + "c"), targetOption);
+	});
+  }
+  
+  function renderTextItem(item, firstTime){		    
+    var gridRow = createMatchItem(item, firstTime);
+  }  
+  
+  function shuffleRecords(records){
+	records.forEach((item, index) => {      
+	  //swap with generated random record
+	  var randomPosition = getRandomInt(0, records.length-1);
+	  if (!records[randomPosition].shuffled){
+		var temp = records[randomPosition].right;
+		records[randomPosition].right = item.right;
+		item.right = temp;
+	  }
+	  records[randomPosition].shuffled = true;
+	  item.shuffled = true;	  
+    });
+	return records;
+  }
+  
+  function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  var defaultPuzzle = [{"left":{"name":"Lion"},"right":{"name":"Forest"}},
+					   {"left":{"name":"Radio"},"right":{"name":"Music"}},
+					   {"left":{"name":"Eat"},"right":{"name":"Cookie"}}];
+  function loadSavedLevelsFromCache(firstTime){
+    var localStorage = window.localStorage;
+	var matchItems = localStorage.getItem("matching-puzzle")==null ? defaultPuzzle : JSON.parse(localStorage.getItem("matching-puzzle"));
+	matchItems.forEach((item, index) => {      
+	  item.left.id = index + "l";
+	  item.right.id = index + "r";
+    });
+    matchItems = shuffleRecords(matchItems);
+	matchItems && Array.isArray(matchItems) && matchItems.forEach((item, index) => {      
+	  //mainMenuMap.set(item.name, item);
+	  item.id = index;
+	  renderTextItem(item, firstTime);
+    });	
+  }
+  
+  function createMatchItem(item, firstTime){
+    if (firstTime){	
+		var row = document.createElement("div");
+		row.classList.add("row");
+		row.id = item.id;
+		const grid = document.getElementById("grid");
+		grid.appendChild(row);
+		var leftCol = document.createElement("div");
+		leftCol.classList.add("column");
+		var leftCard = document.createElement("div");
+		leftCard.classList.add("card");
+		var leftText = document.createElement("h3");
+		leftText.innerHTML = item.left.name;
+		leftCard.appendChild(leftText);
+		leftCol.appendChild(leftCard);
+		row.appendChild(leftCol);	
+		leftCol.id = item.left.id;
+		leftCard.id = item.left.id + "c";
+		
+		var rightCol = document.createElement("div");
+		rightCol.classList.add("column");
+		var rightCard = document.createElement("div");
+		rightCard.classList.add("card");
+		var rightText = document.createElement("h3");
+		rightText.innerHTML = item.right.name;
+		rightCard.appendChild(rightText);
+		rightCol.appendChild(rightCard);
+		row.appendChild(rightCol);
+		rightCol.id = item.right.id;
+		rightCard.id = item.right.id + "c";
+		
+		/*li.addEventListener('mouseover', function(event) {
+		  handleItemMouseOver(event, item);
+		});*/
+		return row;
+	}
+  }
+  
+  function promptItem(liElement){
+    try{
+    	var synth = window.speechSynthesis;
+    	synth.speak(new SpeechSynthesisUtterance(liElement.innerText));
+    }catch(e){
+      console.log(e);
+    }
+  }
+   
+  function Settings(adminMode, menuId) {
+    this.adminMode = adminMode;
+    this.menuId = menuId;
+    this.greeting = function() {
+      alert('Hi! I\'m ' + this.name + '.');
+    };
+  }  
+  
+  const handleSuccess = function(stream) {
+    const saveButton = document.getElementById('save');
+    
+    const options = {mimeType: 'audio/webm'};
+    const recordedChunks = [];
+    const mediaRecorder = new MediaRecorder(stream, options);
+
+    mediaRecorder.addEventListener('dataavailable', function(e) {
+      if (e.data.size > 0) recordedChunks.push(e.data);
+    });
+
+    mediaRecorder.addEventListener('stop', async function() {
+      globalSettings.voice = new Blob(recordedChunks);
+      const base64Voice = await toBase64(globalSettings.voice);
+      window.localStorage.setItem(globalSettings.menuId.toLowerCase(), base64Voice);
+      /*toBase64(URL.createObjectURL(new Blob(recordedChunks))).then(base64VoiceFile => {
+        localStorage.setItem(globalSettings.menuId.toLowerCase(), base64VoiceFile);
+        console.log(localStorage.getItem(globalSettings.menuId.toLowerCase()));        	
+      });*/
+      //downloadLink.href = URL.createObjectURL(new Blob(recordedChunks));
+      //downloadLink.download = 'acetest.wav';
+    });
+
+    saveButton.addEventListener('click', function() {
+      mediaRecorder.stop();
+    });
+
+    mediaRecorder.start();
+  };
+  
+  function getAudioFileAsBase64(submenuId){    
+    var localStorage = window.localStorage;
+    var audioBase64 = localStorage.getItem(submenuId);
+    /*switch(submenuId){
+      case 'pain-menu': audioBase64 = localStorage.getItem();break;
+      case 'food-menu': audioBase64 = 
+    }*/
+    //return 'data:audio/wav;base64,' + audioBase64;
+    return audioBase64;
+  }
+  
+  function showSubMenu(submenuId){
+    document.getElementById("main-menu").style.display="none";
+    document.getElementById(submenuId).style.display="block";
+    document.getElementById("back").style.display="block";
+    //var audio = new Audio(getAudioFileAsBase64(submenuId.toLowerCase()));    
+    //audio.play();
+    handleMenuDisplay(submenuId);
+  }
+  
+  function showMainMenu(menuId){
+    document.getElementById("main-menu").style.display="table";
+    document.getElementById("food-menu").style.display="none";
+    document.getElementById("pain-menu").style.display="none";
+    document.getElementById("back").style.display="none";
+  }
+  
+  function showText(val){
+    handleMenuDisplay(val.innerText);
+    //alert(val.innerHTML);
+  }
+  
+  async function playRecordedAudio(param){
+    try{
+      var menuId = param ? param : globalSettings.menuId.toLowerCase();
+      var localStorage = window.localStorage;
+      const base64Data = localStorage.getItem(menuId);
+      const base64Response = await fetch(base64Data);
+      var audio = new Audio(URL.createObjectURL(dataURItoBlob(base64Data)/*new Blob(localStorage.getItem('food'))*/));
+      //alert(globalSettings.menuId);
+      audio.play();
+    }catch(e){
+      console.log(e);
+    }
+  }
+  
+  function handleMenuDisplay(menuId){
+    globalSettings.menuId = menuId;
+    if (globalSettings.adminMode){
+    	document.getElementById("record-controls").style.display="table";
+    }else{
+      	
+    }    
+    playRecordedAudio();
+  }
+  
+  function showSettings(){
+    globalSettings.adminMode = !globalSettings.adminMode;
+	if (globalSettings.adminMode){
+		document.getElementById("addInteractionDiv").style.display="table";
+	}else{
+		document.getElementById("matchPuzzleTable").style.display="none";
+		document.getElementById("addInteractionDiv").style.display="none";
+		document.getElementById("grid").style.display="block";
+		redraw(true);
+		
+	}
+    //alert('Settings enabled');
+	//$( "#aac_settings" ).dialog();
+  }
+  
+  function redraw(doPaint){
+	jsPlumb.revalidate("grid");
+	loadSavedLevelsFromCache(doPaint);
+	drawConnectorDots();
+  }
+  
+  toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+  
+  async function voiceFilesUploaded(event){
+	var localStorage = window.localStorage;
+    document.querySelector('#upload-files').files && Array.from(document.querySelector('#upload-files').files).forEach(voiceFile => {
+      toBase64(voiceFile).then(base64VoiceFile => {
+        localStorage.setItem(voiceFile.name.replaceAll('.m4a','').toLowerCase(), base64VoiceFile);
+        console.log(localStorage.getItem(voiceFile.name.replaceAll('.m4a','').toLowerCase()));        	
+      });      
+    });
+    
+  }
+  
+  function dataURItoBlob(dataURI) {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+    var byteString = atob(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+
+    // write the bytes of the string to an ArrayBuffer
+    var ab = new ArrayBuffer(byteString.length);
+
+    // create a view into the buffer
+    var ia = new Uint8Array(ab);
+
+    // set the bytes of the buffer to the correct values
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    // write the ArrayBuffer to a blob, and you're done
+    var blob = new Blob([ab], {type: mimeString});
+    return blob;
+
+  }
+  
+  function configurePuzzle(){
+	jsPlumb.empty("grid");
+	document.getElementById("grid").style.display="none";
+	document.getElementById("matchPuzzleTable").style.display="block";
+	var templateText = $("#tableTemplate").html();
+	var tableTemplate = Handlebars.compile(templateText);
+	var defaultConfig = [
+		{ "Left entry": "Lion", "Right entry": "Forest"},
+		{ "Left entry": "Radio", "Right entry": "Music"},
+		{ "Left entry": "Eat", "Right entry": "Cookie"}
+	  ];
+	var puzzle;  
+	if (window.localStorage.getItem("matching-puzzle")!=null){
+	  puzzle = JSON.parse(window.localStorage.getItem("matching-puzzle")).map(function(element){
+		return {"Left entry":element.left.name, "Right entry":element.right.name};
+	  });
+	}else{
+	  puzzle = defaultConfig;
+	}
+	$("#matchPuzzleTable").html(tableTemplate({ array: puzzle }));
+  }
+  
+  function addNewMatch(){
+	var newRow = $("#matchPuzzleTable table")[0].insertRow(-1);
+	var cell1 = newRow.insertCell(0);
+	cell1.innerHTML = '<input type="text" class="expand" value="">';
+	var cell2 = newRow.insertCell(1);
+	cell2.innerHTML = '<input type="text" class="expand" value="">';
+	var cell3 = newRow.insertCell(2);
+	cell3.innerHTML = '<input type="button" value="Delete" onclick="deleteMatchItem(event)">'	
+  }
+  
+  function deleteMatchItem(event){
+	event.path[2].remove()
+  }
+  
+  var matchPuzzleItem = {"left": {"name": undefined}, "right": {"name": undefined}};
+  function saveMatches(){
+	var matchPuzzleItems = [];
+	var skip = false;
+	$("#matchPuzzleTable tr:not(:first) input:text").each(function(index, item) {
+		var copiedMatchPuzzleItem = JSON.parse(JSON.stringify(matchPuzzleItem));
+		if (!skip){
+			copiedMatchPuzzleItem.left.name = item.value;
+			copiedMatchPuzzleItem.right.name = $("#matchPuzzleTable tr:not(:first) input:text")[index+1].value;
+			matchPuzzleItems.push(copiedMatchPuzzleItem);
+		}
+		skip = !skip;	
+	});	
+	window.localStorage.setItem("matching-puzzle", JSON.stringify(matchPuzzleItems));
+  }
+  
+</script>
+
+<script type="text/x-handlebars-template" id="tableTemplate">
+<table>
+<thead>
+  <tr>
+    {{#each array.[0]}}
+      <th>{{@key}}</th>
+    {{/each}}
+	<!--th>Edit</th-->
+	<th>Delete</th>
+  </tr>
+</thead>
+<tbody>
+  {{#each array}}
+    <tr>
+    	{{#each this}}
+        <td><input type="text" class="expand" value={{this}}></td>
+      {{/each}}
+	  <!--td><input type="button" value="Edit"></td-->
+	  <td><input type="button" value="Delete" onclick="deleteMatchItem(event)"></td>
+    </tr>
+  {{/each}}
+</tbody>
+</table>
+<input type="button" value="Add" onclick="addNewMatch()">
+<input type="button" value="Save" onclick="saveMatches()">
+</script>
+
+<div class="top-row">
+  <div id="addInteractionDiv" class="addInteractionDiv" style="display:none">
+	<button id="configurePuzzle" onclick="configurePuzzle()">Configure</button>
+  </div>  
+  
+  <div id="aac-settings-icon" class="top-right-column top-right">
+      <a href="#" onclick="showSettings()" style="float:right; margin:0 0 1em 0">Settings</a>
+  </div>
+</div>
+<div id="grid" class="grid-style">	
+</div>
+
+<div id="matchPuzzleTable"></div>
